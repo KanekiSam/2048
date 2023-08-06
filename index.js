@@ -43,8 +43,8 @@ class Game {
         64: { color: '#724f56', img: 'bg6.webp' },
         128: { color: '#407a86', img: 'bg7.webp' },
         256: { color: '#3b818d', img: 'bg8.webp' },
-        512: { color: '#407885', img: 'bg8.avif' },
-        1024: { color: '#993923', img: 'bg10.avif' },
+        512: { color: '#407885', img: 'bg8.webp' },
+        1024: { color: '#993923', img: 'bg10.webp' },
         2048: { color: '#993923', img: 'bg11.webp' }
       },
       isApp: /mobile/i.test(navigator.userAgent),
@@ -289,7 +289,7 @@ class Game {
       const { left: x, top: y, width: w, height: h } = dom.getBoundingClientRect();
       const eles = document.querySelectorAll('.cardGroup');
       eles.forEach(ele => {
-        if (ele.children.length > 0 && ele.children.length < this.state.maxGroup) {
+        if (ele.children.length > 0 && (ele.children.length < this.state.maxGroup || (ele.children.length == this.state.maxGroup && dom.innerText == ele.lastElementChild.innerText))) {
           const { left, top, width, height } = ele.lastElementChild.getBoundingClientRect();
           if (y > top && y < top + height) {
             if (x > left && x < left + width) {
@@ -494,7 +494,7 @@ class Game {
       console.log(ev.target);
       if (ev.target.classList.contains('card')) {
         if (
-          ev.target.parentNode.children.length < that.state.maxGroup &&
+          ev.target.parentNode.children.length <= that.state.maxGroup &&
           ev.target.dataset.id ==
           ev.target.parentNode.lastElementChild.dataset.id
         ) {
