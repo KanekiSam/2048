@@ -1,0 +1,198 @@
+body {
+  margin: 0;
+}
+
+.content {
+  max-width: 960px;
+  height: 600px;
+  margin: auto;
+  background-color: #eee;
+  position: relative;
+}
+
+.user {
+  height: 10%;
+  /* border: 1px solid #999; */
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 30px;
+}
+
+.user .restartBtn {
+  padding: 5px 30px;
+  border-radius: 5px;
+  border: 1px solid #999;
+  cursor: pointer;
+}
+
+.user .gameInfo {
+  flex: 1;
+}
+
+.user .userBox {
+  display: flex;
+  flex: 1;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.user .userBox .userName {
+  font-weight: bold;
+  margin-right: 12px;
+  color: #666;
+}
+
+.user .userBox img {
+  width: 48px;
+  height: 48px;
+  border-radius: 100%;
+}
+
+.main {
+  height: 70%;
+  /* border: 1px solid #999; */
+  box-sizing: border-box;
+  display: flex;
+  padding: 30px 0;
+  justify-content: space-around;
+}
+
+.main .cardGroup {
+  width: 80px;
+  height: 108px;
+  border: 1px dashed #999;
+  box-sizing: border-box;
+}
+
+.main .cardGroup .card {
+  width: 100%;
+  height: 100%;
+  /* text-align: center; */
+  color: white;
+  line-height: 25px;
+  padding-left: 5px;
+  background: repeating-radial-gradient(circle at 0 0, var(--color), var(--color) 30px, white 31px, white);
+  background-color: white;
+  border: 3px solid var(--color);
+  box-sizing: border-box;
+  /* border: 1px solid #999; */
+  position: relative;
+  left: -1px;
+  top: -1px;
+  transition: all 0.5s;
+  font-weight: bold;
+  border-radius: 4px;
+}
+
+.main .cardGroup .card:not(:first-child) {
+  margin-top: -100%;
+}
+
+.cards {
+  height: 20%;
+  /* border: 1px solid #999; */
+  box-sizing: border-box;
+  display: flex;
+  overflow: hidden;
+}
+
+.cards .cardWrapper {
+  flex: 1;
+  /* position: relative; */
+}
+
+.cards .keyWrapper {
+  flex: 1;
+}
+
+.cardWrapper .card {
+  width: 80px;
+  height: 108px;
+  display: inline-block;
+  /* border: 1px solid #999; */
+  /* text-align: center; */
+  color: white;
+  line-height: 25px;
+  padding-left: 5px;
+  background: repeating-radial-gradient(circle at 0 0, var(--color), var(--color) 30px, white 31px, white);
+  background-color: white;
+  border: 3px solid var(--color);
+  box-sizing: border-box;
+  position: absolute;
+  bottom: 25px;
+  transition: all .1s;
+  font-weight: bold;
+  border-radius: 4px;
+}
+
+.cardWrapper .card:nth-child(1) {
+  left: 0;
+}
+
+.cardWrapper .card:nth-child(2) {
+  left: 40px;
+}
+
+.cardWrapper .card:nth-child(3) {
+  left: 80px;
+}
+
+.keyWrapper {
+  /* position: relative; */
+}
+
+.keyWrapper .key {
+  width: 80px;
+  height: 108px;
+  display: inline-block;
+  color: white;
+  line-height: 25px;
+  padding-left: 5px;
+  background: repeating-radial-gradient(circle at 0 0, #9b3423, #9b3423 30px, white 31px, white);
+  background-color: white;
+  border: 3px solid #9b3423;
+  box-sizing: border-box;
+  font-weight: bold;
+  border-radius: 4px;
+  transition: all .1s;
+  position: absolute;
+  left: 50%;
+  bottom: 25px;
+}
+
+.keyWrapper .key:nth-child(2) {
+  left: calc(50% + 40px);
+}
+
+.keyWrapper .key:nth-child(3) {
+  left: calc(50% + 80px);
+}
+
+.keyWrapper .key:nth-child(4) {
+  left: calc(50% + 120px);
+}
+
+.keyWrapper .key:nth-child(5) {
+  left: calc(50% + 160px);
+}
+
+.keyWrapper .key:nth-child(6) {
+  left: calc(50% + 200px);
+}
+
+.keyWrapper .key:nth-child(7) {
+  left: calc(50% + 240px);
+}
+
+@media (max-width:600px) {
+  .content {
+    width: 100%;
+    height: 100vh;
+  }
+
+  .main .cardGroup:last-child {
+    display: none;
+  }
+}
