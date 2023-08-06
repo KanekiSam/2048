@@ -34,7 +34,21 @@ class Game {
         1024: '#993923',
         2048: '#993923'
       },
+      cardMapper: {
+        2: { color: '#65734f', img: 'bg1.webp' },
+        4: { color: '#8a3c3c', img: 'bg2.jpeg' },
+        8: { color: '#3e8c65', img: 'bg3.webp' },
+        16: { color: '#746351', img: 'bg4.webp' },
+        32: { color: '#4f6c74', img: 'bg5.webp' },
+        64: { color: '#724f56', img: 'bg6.webp' },
+        128: { color: '#407a86', img: 'bg7.webp' },
+        256: { color: '#3b818d', img: 'bg8.webp' },
+        512: { color: '#407885', img: 'bg8.avif' },
+        1024: { color: '#993923', img: 'bg10.avif' },
+        2048: { color: '#993923', img: 'bg11.webp' }
+      },
       isApp: /mobile/i.test(navigator.userAgent),
+      historyId: '',
     };
   }
   init() {
@@ -42,6 +56,15 @@ class Game {
     this.createSystemCard();
     this.bindDropEvent();
     // this.bindCardEvent();
+  }
+  playSound() {
+    const dom = document.getElementById('dealCard');
+    dom.currentTime = 0;
+    dom.play();
+  }
+  closeSound() {
+    const dom = document.getElementById('dealCard');
+    dom.pause();
   }
   restartGame() {
     this.initData();
@@ -116,7 +139,7 @@ class Game {
       curMinPoint,
       curMaxPoint
     } = this.state;
-    while (systemCards.length < 3) {
+    while (systemCardDom.children.length < 3) {
       console.log(curMinPoint);
       let cardNum;
       if (curMinPoint < minLen) {
@@ -138,13 +161,15 @@ class Game {
     }
     systemCardDom.lastElementChild &&
       (systemCardDom.lastElementChild.draggable = true);
+    this.addCardEvent(systemCardDom.lastElementChild, systemCardDom.lastElementChild.innerText);
   }
   createCard(num) {
-    const { colorMapper } = this.state;
+    const { cardMapper } = this.state;
     const card = document.createElement('div');
     card.className = 'card';
     card.innerText = num;
-    card.style.setProperty('--color', colorMapper[num])
+    card.style.setProperty('--color', cardMapper[num].color);
+    card.style.setProperty('--img', `url(./img/${cardMapper[num].img})`);
     card.dataset.id = this.getUniqueKey();
     return card;
   }
@@ -152,14 +177,25 @@ class Game {
     const { systemCardDom, isApp } = this.state;
     if (systemCardDom) {
       const card = this.createCard(num);
-      this.addCardEvent(card, num);
+      card.dataset.id = this.getUniqueKey();
       systemCardDom.prepend(card);
+    }
+  }
+  unBindEvent() {
+    console.log(this.state.systemCardDom.children)
+    for (let ele of this.state.systemCardDom.children) {
+      ele.ontouchstart = () => { }
+      ele.ontouchmove = () => { }
+      ele.ontouchend = () => { }
+      ele.ondragstart = () => { }
+      ele.ondragend = () => { }
     }
   }
   addCardEvent(ele, num) {
     const that = this;
     const { isApp } = this.state;
     if (!isApp) {
+      const { left } = ele.style;
       ele.ondragstart = function (e) {
         var ev = e || window.event;
         ev.dataTransfer.setData('cardNum', num);
@@ -167,9 +203,11 @@ class Game {
         setTimeout(() => {
           ele.style.top = '200%';
         }, 100);
-      };
-      ele.ondragend = function () {
-        ele.style.top = 0;
+        ele.ondragend = function () {
+          ele.style.left = left;
+          ele.style.top = 'unset';
+          ele.style.bottom = '25px';
+        };
       };
     } else {
       const content = document.querySelector('.content');
@@ -210,7 +248,6 @@ class Game {
         ev.dataTransfer.setData('key', key.dataset.id);
       };
     } else {
-      console.log('key');
       const content = document.querySelector('.content');
       key.ontouchstart = function (e) {
         const ev = e.targetTouches[0];
@@ -303,7 +340,7 @@ class Game {
       clb();
     } else {
       if (type == '1') {
-        this.addCardApp({ num: dom.innerText, dom: cur.ele });
+        this.addCardApp({ num: dom.innerText, dom: cur.ele, id: dom.dataset.id });
       } else {
         this.addCardApp({ key: dom.dataset.id, dom: cur.ele });
       }
@@ -316,12 +353,12 @@ class Game {
     key.innerText = 'key';
     key.draggable = true;
     key.dataset.id = this.getUniqueKey();
-    this.addKeyeEvent(key);
     // key.ondragstart = function (e) {
     //   var ev = e || window.event;
     //   ev.dataTransfer.setData('key', key.dataset.id);
     // };
     keyWrapperDom.append(key);
+    this.addKeyeEvent(keyWrapperDom.lastElementChild);
   }
   removeKey(key) {
     const { keyWrapperDom } = this.state;
@@ -335,6 +372,23 @@ class Game {
       }, time);
     });
   }
+  back() {
+    console.log(this.state.historyId)
+    if (this.state.historyId) {
+      const ele = document.querySelector(`.card[data-id="${this.state.historyId}"]`);
+      const { left, top } = ele.getBoundingClientRect();
+      ele.remove();
+      ele.style.left = left + 'px';
+      ele.style.top = top + 'px';
+      this.state.systemCardDom.append(ele);
+      ele.style.left = '120px';
+      ele.style.top = 'unset';
+      ele.style.bottom = '25px';
+      this.state.historyId = '';
+      this.unBindEvent();
+      this.addCardEvent(this.state.systemCardDom.lastElementChild, this.state.systemCardDom.lastElementChild.innerText);
+    }
+  }
   async mergeCard(dom) {
     var cur = dom.children.length - 1;
     var curNum = dom.children[cur].innerText;
@@ -342,13 +396,17 @@ class Game {
       var prev = dom.children[cur - 1];
       var prevNum = prev.innerText;
       if (curNum == prevNum) {
+        this.state.historyId = '';
+        this.playSound();
         dom.lastElementChild.style.top = '-30%';
         await this.playAnimate(() => {
           dom.lastElementChild.remove();
         });
+        prev.style.setProperty('--img', `url(./img/${this.state.cardMapper[curNum * 2].img})`);
+        prev.style.setProperty('--color', this.state.cardMapper[curNum * 2].color);
         prev.innerText = curNum * 2;
-        prev.style.setProperty('--color', this.state.colorMapper[curNum * 2]);
         this.addScore(curNum * 2);
+        this.closeSound();
         if (curNum * 2 >= this.state.largeNum) {
           console.log(dom.lastElementChild);
           dom.lastElementChild.style.left = `${this.state.mainWrapper.clientWidth / 2 -
@@ -364,17 +422,28 @@ class Game {
         } else {
           this.mergeCard(dom);
         }
+      } else {
+        setTimeout(() => {
+          this.closeSound();
+        }, 500);
       }
       prev.ondragleave?.();
+    } else {
+      setTimeout(() => {
+        this.closeSound();
+      }, 500);
     }
   }
   getUniqueKey() {
     return new Date().getTime() + '-' + Math.random().toFixed(2);
   }
-  addCardApp({ num, dom, key }) {
+  addCardApp({ num, dom, key, id }) {
     const { systemCardDom, systemCards } = this.state;
     if (num) {
+      this.playSound();
       const card = this.createCard(num);
+      card.dataset.id = id;
+      this.state.historyId = id;
       dom.appendChild(card);
       this.bindDragEnterEvent(card);
       this.mergeCard(dom);
@@ -393,6 +462,7 @@ class Game {
     var data = ev.dataTransfer.getData('cardNum');
     var cardId = ev.dataTransfer.getData('cardId');
     if (data) {
+      this.playSound();
       const card = this.createCard(data);
       dom.appendChild(card);
       this.bindDragEnterEvent(card);
@@ -400,6 +470,9 @@ class Game {
       systemCards.pop();
       systemCardDom.removeChild(systemCardDom.lastElementChild);
       this.createSystemCard();
+      // setTimeout(() => {
+      //   this.closeSound();
+      // }, 500);
     }
     var key = ev.dataTransfer.getData('key');
     if (key) {
@@ -447,4 +520,7 @@ const game = new Game();
 
 function restart() {
   game.restartGame();
+}
+function back() {
+  game.back();
 }

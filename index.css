@@ -73,9 +73,9 @@ body {
   color: white;
   line-height: 25px;
   padding-left: 5px;
-  background: repeating-radial-gradient(circle at 0 0, var(--color), var(--color) 30px, white 31px, white);
-  background-color: white;
-  border: 3px solid var(--color);
+  /* background: repeating-radial-gradient(circle at 0 0, var(--color), var(--color) 30px, white 31px, white); */
+  /* background-color: white; */
+  /* border: 3px solid var(--color); */
   box-sizing: border-box;
   /* border: 1px solid #999; */
   position: relative;
@@ -84,6 +84,34 @@ body {
   transition: all 0.5s;
   font-weight: bold;
   border-radius: 4px;
+  z-index: 1;
+  user-select: none;
+}
+
+.cardGroup .card::before {
+  content: '';
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: repeating-radial-gradient(circle at 0 0, var(--color), var(--color) 30px, transparent 31px, transparent);
+  z-index: -1;
+}
+
+.cardGroup .card::after {
+  content: '';
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--img);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  z-index: -2;
 }
 
 .main .cardGroup .card:not(:first-child) {
@@ -116,15 +144,42 @@ body {
   color: white;
   line-height: 25px;
   padding-left: 5px;
-  background: repeating-radial-gradient(circle at 0 0, var(--color), var(--color) 30px, white 31px, white);
-  background-color: white;
-  border: 3px solid var(--color);
+  /* background-color: white; */
+  /* border: 3px solid var(--color); */
   box-sizing: border-box;
   position: absolute;
   bottom: 25px;
   transition: all .1s;
   font-weight: bold;
   border-radius: 4px;
+  z-index: 1;
+  user-select: none;
+}
+
+.cardWrapper .card::before {
+  content: '';
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: repeating-radial-gradient(circle at 0 0, var(--color), var(--color) 30px, transparent 31px, transparent);
+  z-index: -1;
+}
+
+.cardWrapper .card::after {
+  content: '';
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--img);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  z-index: -2;
 }
 
 .cardWrapper .card:nth-child(1) {
@@ -195,4 +250,17 @@ body {
   .main .cardGroup:last-child {
     display: none;
   }
+}
+
+.content .back {
+  width: 60px;
+  height: 60px;
+  border-radius: 100%;
+  line-height: 60px;
+  text-align: center;
+  background-color: #3e8c65;
+  color: white;
+  position: absolute;
+  right: 15px;
+  bottom: 15px;
 }

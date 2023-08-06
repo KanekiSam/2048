@@ -12,7 +12,9 @@
       <div class="user">
         <div class="gameInfo">得分：<span class="score">0</span></div>
         <div class="restartBtn" onclick="restart()">重新开始</div>
-        <div class="userBox"><span class="userName">Chihiro</span><img src="./user.webp" /></div>
+        <div class="userBox">
+          <span class="userName">Chihiro</span><img src="./user.webp" />
+        </div>
       </div>
       <div class="main">
         <div class="cardGroup"></div>
@@ -25,7 +27,9 @@
         <div class="cardWrapper"></div>
         <div class="keyWrapper"></div>
       </div>
+      <div class="back" onclick="back()">撤回</div>
     </div>
+    <audio id="dealCard" src="./audio/dealCard.mp3" preload loop></audio>
     <script src="./index.js"></script>
   </body>
 </html>
