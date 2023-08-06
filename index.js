@@ -15,7 +15,7 @@ class Game {
       keyWrapperDom: document.querySelector('.keyWrapper'), // 钥匙库
       mainWrapper: document.querySelector('.main'),
       scoreWrapper: document.querySelector('.score'),
-      largeNum: 16, // 最大卡牌数
+      largeNum: 2048, // 最大卡牌数
       minLen: 0, // [2,4,8]小卡牌数
       maxLen: 0, // [16，32，64]大卡牌数
       curMinPoint: 0, // 小卡牌指针
