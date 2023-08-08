@@ -49,6 +49,7 @@ class Game {
       },
       isApp: /mobile/i.test(navigator.userAgent),
       historyId: '',
+      inMerging: [],
     };
   }
   init() {
@@ -340,9 +341,9 @@ class Game {
       clb();
     } else {
       if (type == '1') {
-        this.addCardApp({ num: dom.innerText, dom: cur.ele, id: dom.dataset.id });
+        this.addCardApp({ num: dom.innerText, dom: cur.ele, id: dom.dataset.id, clb });
       } else {
-        this.addCardApp({ key: dom.dataset.id, dom: cur.ele });
+        this.addCardApp({ key: dom.dataset.id, dom: cur.ele, clb });
       }
     }
   }
@@ -392,10 +393,14 @@ class Game {
   async mergeCard(dom) {
     var cur = dom.children.length - 1;
     var curNum = dom.children[cur].innerText;
+    const key = dom.key;
     if (cur != 0) {
       var prev = dom.children[cur - 1];
       var prevNum = prev.innerText;
       if (curNum == prevNum) {
+        if (this.state.inMerging.indexOf(key) == -1) {
+          this.state.inMerging.push(key);
+        }
         this.state.historyId = '';
         this.playSound();
         dom.lastElementChild.style.top = '-30%';
@@ -423,12 +428,18 @@ class Game {
           this.mergeCard(dom);
         }
       } else {
+        if (this.state.inMerging.indexOf(key) > -1) {
+          this.state.inMerging.splice(this.state.inMerging.indexOf(key), 1);
+        }
         setTimeout(() => {
           this.closeSound();
         }, 500);
       }
       prev.ondragleave?.();
     } else {
+      if (this.state.inMerging.indexOf(key) > -1) {
+        this.state.inMerging.splice(this.state.inMerging.indexOf(key), 1);
+      }
       setTimeout(() => {
         this.closeSound();
       }, 500);
@@ -437,19 +448,23 @@ class Game {
   getUniqueKey() {
     return new Date().getTime() + '-' + Math.random().toFixed(2);
   }
-  addCardApp({ num, dom, key, id }) {
+  addCardApp({ num, dom, key, id, clb }) {
     const { systemCardDom, systemCards } = this.state;
     if (num) {
-      this.playSound();
-      const card = this.createCard(num);
-      card.dataset.id = id;
-      this.state.historyId = id;
-      dom.appendChild(card);
-      this.bindDragEnterEvent(card);
-      this.mergeCard(dom);
-      systemCards.pop();
-      systemCardDom.removeChild(systemCardDom.lastElementChild);
-      this.createSystemCard();
+      if (this.state.inMerging.indexOf(dom.key) == -1) {
+        this.playSound();
+        const card = this.createCard(num);
+        card.dataset.id = id;
+        this.state.historyId = id;
+        dom.appendChild(card);
+        this.bindDragEnterEvent(card);
+        this.mergeCard(dom);
+        systemCards.pop();
+        systemCardDom.removeChild(systemCardDom.lastElementChild);
+        this.createSystemCard();
+      } else {
+        clb();
+      }
     }
     if (key) {
       dom.lastElementChild && (dom.lastElementChild.innerText *= 2);
