@@ -85,7 +85,6 @@ class Game {
       this.state.minLen = 6 + Math.floor(Math.random() * 3);
       this.state.maxLen = 3 + Math.floor(Math.random() * 3);
     }
-    console.log(this.state.minLen, this.state.maxLen);
   }
   checkLife() {
     let flag = false;
@@ -112,7 +111,6 @@ class Game {
       cardNum /= 2;
     }
     this.state.score = score;
-    console.log(score);
     this.state.scoreWrapper.innerText = score;
   }
   // 1:小卡牌，2大卡牌
@@ -141,7 +139,6 @@ class Game {
       curMaxPoint
     } = this.state;
     while (systemCardDom.children.length < 3) {
-      console.log(curMinPoint);
       let cardNum;
       if (curMinPoint < minLen) {
         cardNum = this.gernerateCardNum();
@@ -183,7 +180,6 @@ class Game {
     }
   }
   unBindEvent() {
-    console.log(this.state.systemCardDom.children)
     for (let ele of this.state.systemCardDom.children) {
       ele.ontouchstart = () => { }
       ele.ontouchmove = () => { }
@@ -252,7 +248,6 @@ class Game {
       const content = document.querySelector('.content');
       key.ontouchstart = function (e) {
         const ev = e.targetTouches[0];
-        console.log(ev);
         const { clientX, clientY } = ev;
         const { left, top, width, height } = ev.target.getBoundingClientRect();
         const diffX = clientX - left;
@@ -292,7 +287,7 @@ class Game {
       eles.forEach(ele => {
         if (ele.children.length > 0 && (ele.children.length < this.state.maxGroup || (ele.children.length == this.state.maxGroup && dom.innerText == ele.lastElementChild.innerText))) {
           const { left, top, width, height } = ele.lastElementChild.getBoundingClientRect();
-          if (y > top && y < top + height) {
+          if (y > top - 10 && y < top + height) {
             if (x > left && x < left + width) {
               if (!cur || left + width - x > cur.diff) {
                 cur = {
@@ -314,7 +309,7 @@ class Game {
           }
         } else if (type == '1') {
           const { left, top, width, height } = ele.getBoundingClientRect();
-          if (y > top && y < top + height) {
+          if (y > top - 10 && y < top + height) {
             if (x > left && x < left + width) {
               if (!cur || left + width - x > cur.diff) {
                 cur = {
@@ -374,7 +369,6 @@ class Game {
     });
   }
   back() {
-    console.log(this.state.historyId)
     if (this.state.historyId) {
       const ele = document.querySelector(`.card[data-id="${this.state.historyId}"]`);
       const { left, top } = ele.getBoundingClientRect();
@@ -393,7 +387,7 @@ class Game {
   async mergeCard(dom) {
     var cur = dom.children.length - 1;
     var curNum = dom.children[cur].innerText;
-    const key = dom.key;
+    const key = dom.dataset.key;
     if (cur != 0) {
       var prev = dom.children[cur - 1];
       var prevNum = prev.innerText;
@@ -413,7 +407,6 @@ class Game {
         this.addScore(curNum * 2);
         this.closeSound();
         if (curNum * 2 >= this.state.largeNum) {
-          console.log(dom.lastElementChild);
           dom.lastElementChild.style.left = `${this.state.mainWrapper.clientWidth / 2 -
             dom.lastElementChild.offsetLeft
             }px`;
@@ -451,7 +444,7 @@ class Game {
   addCardApp({ num, dom, key, id, clb }) {
     const { systemCardDom, systemCards } = this.state;
     if (num) {
-      if (this.state.inMerging.indexOf(dom.key) == -1) {
+      if (this.state.inMerging.indexOf(dom.dataset.key) == -1) {
         this.playSound();
         const card = this.createCard(num);
         card.dataset.id = id;
@@ -506,7 +499,6 @@ class Game {
     };
     main.ondrop = function (e) {
       var ev = e || window.event;
-      console.log(ev.target);
       if (ev.target.classList.contains('card')) {
         if (
           ev.target.parentNode.children.length <= that.state.maxGroup &&
