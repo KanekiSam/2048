@@ -531,3 +531,17 @@ function restart() {
 function back() {
   game.back();
 }
+function stop() {
+  const dom = document.querySelector('.icon');
+  const music = document.getElementById('bgMusic');
+  const user = document.querySelector('.user-img');
+  if (dom.src.includes('/img/play.png')) {
+    music.play();
+    user.classList.add('playing');
+    dom.src = './img/pause.png';
+  } else {
+    music.pause();
+    user.classList.remove('playing');
+    dom.src = './img/play.png';
+  }
+}

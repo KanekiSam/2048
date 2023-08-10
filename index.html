@@ -13,7 +13,11 @@
         <div class="gameInfo">得分：<span class="score">0</span></div>
         <div class="restartBtn" onclick="restart()">重新开始</div>
         <div class="userBox">
-          <span class="userName">Chihiro</span><img src="./user.webp" />
+          <span class="userName">Chihiro</span>
+          <div class="avatar" onclick="stop()">
+            <img class="icon" src="./img/play.png" alt="" />
+            <img class="user-img" src="./img/user.webp" />
+          </div>
         </div>
       </div>
       <div class="main">
@@ -30,6 +34,7 @@
       <div class="back" onclick="back()">撤回</div>
     </div>
     <audio id="dealCard" src="./audio/dealCard.mp3" preload loop></audio>
+    <audio id="bgMusic" src="./audio/快乐乌库勒.mp3" autoplay preload loop></audio>
     <script src="./index.js"></script>
   </body>
 </html>
