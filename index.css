@@ -180,7 +180,7 @@ body {
   box-sizing: border-box;
   position: absolute;
   bottom: 25px;
-  transition: all .1s;
+  /* transition: all .1s; */
   font-weight: bold;
   border-radius: 4px;
   z-index: 1;
